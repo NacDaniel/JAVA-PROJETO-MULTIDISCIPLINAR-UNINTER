@@ -1,0 +1,371 @@
+{
+  "info": {
+    "name": "Raízes do Nordeste API",
+    "description": "Coleção de endpoints da API REST do sistema de gerenciamento da rede de franquias Raízes do Nordeste.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "email", "value": "gerente@raizes.com", "type": "text" },
+              { "key": "senha", "value": "senha123", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Autentica o usuário. JWT retornado como cookie httpOnly."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-05-29T10:32:14Z\"\n}"
+            },
+            {
+              "name": "401 Credenciais inválidas",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"E-mail ou senha inválidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-15T09:28:55Z\",\n  \"path\": \"/api/auth/login\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Encerra a sessão do usuário removendo o cookie JWT."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Alterar Senha",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senhaAtual\": \"senha123\",\n  \"senhaNova\": \"novaSenha456\",\n  \"confirmacaoSenhaNova\": \"novaSenha456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/alterar-senha",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "alterar-senha"]
+            },
+            "description": "Altera a senha do usuário autenticado. Requer cookie JWT."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            },
+            {
+              "name": "400 Senhas não conferem",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"A senha nova e a confirmação não coincidem.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-15T13:57:31Z\",\n  \"path\": \"/api/auth/alterar-senha\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Registro de Usuário",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"senha\": \"senha123\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/registro",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "registro"]
+            },
+            "description": "Cadastra novo funcionário. Requer cargo GERENTE."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 5,\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
+            },
+            {
+              "name": "409 E-mail já cadastrado",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"CONFLICT\",\n  \"message\": \"E-mail já cadastrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-17T10:21:44Z\",\n  \"path\": \"/api/auth/registro\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Criar Pedido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 },\n    { \"produtoId\": 7, \"quantidade\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            },
+            "description": "Cria novo pedido. Valida estoque antes de confirmar."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+            },
+            {
+              "name": "409 Estoque insuficiente",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"CONFLICT\",\n  \"message\": \"Estoque insuficiente para o produto 3.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos?unidadeId=1&status=EM_PREPARACAO",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"],
+              "query": [
+                { "key": "unidadeId", "value": "1" },
+                { "key": "clienteId", "value": "", "disabled": true },
+                { "key": "canalPedido", "value": "", "disabled": true },
+                { "key": "status", "value": "EM_PREPARACAO" }
+              ]
+            },
+            "description": "Lista pedidos com filtros. Pelo menos um filtro obrigatório."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"pedidoId\": 42,\n    \"status\": \"EM_PREPARACAO\",\n    \"total\": 89.70,\n    \"itens\": [\n      { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n    ],\n    \"createdAt\": \"2026-05-19T15:33:08Z\"\n  }\n]"
+            },
+            {
+              "name": "400 Sem filtros",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Informe ao menos um filtro para listar pedidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Buscar Pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/42",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "42"]
+            },
+            "description": "Retorna os detalhes de um pedido específico."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"EM_PREPARACAO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+            },
+            {
+              "name": "404 Não encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"NOT_FOUND\",\n  \"message\": \"Pedido não encontrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos/42\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Atualizar Status do Pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"EM_PREPARACAO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/42/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "42", "status"]
+            },
+            "description": "Atualiza o status de um pedido. Permissões por cargo: ATENDENTE (AGUARDANDO_PAGAMENTO→EM_PREPARACAO), COZINHA (EM_PREPARACAO→EM_ENTREGA), GERENTE (qualquer)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"EM_PREPARACAO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+            },
+            {
+              "name": "403 Sem permissão",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/status\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancelar Pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/42/cancelar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "42", "cancelar"]
+            },
+            "description": "Cancela um pedido e restaura o estoque dos itens."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"CANCELADO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+            },
+            {
+              "name": "400 Pedido já entregue",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Pedido já entregue não pode ser cancelado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/cancelar\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pagamentos",
+      "item": [
+        {
+          "name": "Processar Pagamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"PIX\",\n  \"simularFalha\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pagamentos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pagamentos"]
+            },
+            "description": "Processa o pagamento de um pedido. Use simularFalha: true para testar cenário de recusa."
+          },
+          "response": [
+            {
+              "name": "200 Aprovado",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pagamentoId\": 18,\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"PIX\",\n  \"statusPagamento\": \"APROVADO\",\n  \"statusPedido\": \"EM_PREPARACAO\",\n  \"valor\": 89.70\n}"
+            },
+            {
+              "name": "200 Recusado",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pagamentoId\": 19,\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"CREDITO\",\n  \"statusPagamento\": \"RECUSADO\",\n  \"statusPedido\": \"AGUARDANDO_PAGAMENTO\",\n  \"valor\": 89.70,\n  \"mensagem\": \"Pagamento recusado pela operadora. Tente outro meio de pagamento.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Acesso sem autenticação (401)",
+      "item": [
+        {
+          "name": "Requisição sem cookie JWT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos?unidadeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"],
+              "query": [{ "key": "unidadeId", "value": "1" }]
+            },
+            "description": "Simula acesso sem token JWT. Deve retornar 401."
+          },
+          "response": [
+            {
+              "name": "401 Não autenticado",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Token de autenticação ausente ou inválido.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-24T10:15:52Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
