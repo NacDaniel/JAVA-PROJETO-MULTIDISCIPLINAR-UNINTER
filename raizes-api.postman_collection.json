@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Raízes do Nordeste API",
-    "description": "Coleção de endpoints da API REST do sistema de gerenciamento da rede de franquias Raízes do Nordeste.",
+    "description": "Coleção completa de testes da API REST do sistema Raízes do Nordeste. Organize a execução na ordem: Auth → Pedidos → Pagamentos → Erros.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -16,7 +16,7 @@
       "name": "Auth",
       "item": [
         {
-          "name": "Login",
+          "name": "T01 - Login válido",
           "request": {
             "method": "POST",
             "header": [
@@ -28,7 +28,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "login"]
             },
-            "description": "Autentica o usuário. JWT retornado como cookie httpOnly."
+            "description": "T01 - Positivo. Login com credenciais válidas. JWT retornado como cookie httpOnly (não no body)."
           },
           "response": [
             {
@@ -37,9 +37,27 @@
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-05-29T10:32:14Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T02 - Login com credenciais inválidas",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "email", "value": "gerente@raizes.com", "type": "text" },
+              { "key": "senha", "value": "senhaErrada", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
             },
+            "description": "T02 - Negativo. Credenciais inválidas devem retornar 401."
+          },
+          "response": [
             {
-              "name": "401 Credenciais inválidas",
+              "name": "401 Unauthorized",
               "status": "Unauthorized",
               "code": 401,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -57,7 +75,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "logout"]
             },
-            "description": "Encerra a sessão do usuário removendo o cookie JWT."
+            "description": "Encerra a sessão removendo o cookie JWT."
           },
           "response": [
             {
@@ -83,7 +101,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "alterar-senha"]
             },
-            "description": "Altera a senha do usuário autenticado. Requer cookie JWT."
+            "description": "Altera senha do usuário autenticado. Requer cookie JWT."
           },
           "response": [
             {
@@ -92,13 +110,6 @@
               "code": 204,
               "header": [],
               "body": ""
-            },
-            {
-              "name": "400 Senhas não conferem",
-              "status": "Bad Request",
-              "code": 400,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"A senha nova e a confirmação não coincidem.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-15T13:57:31Z\",\n  \"path\": \"/api/auth/alterar-senha\"\n}"
             }
           ]
         },
@@ -125,13 +136,6 @@
               "code": 201,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"id\": 5,\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
-            },
-            {
-              "name": "409 E-mail já cadastrado",
-              "status": "Conflict",
-              "code": 409,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"CONFLICT\",\n  \"message\": \"E-mail já cadastrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-17T10:21:44Z\",\n  \"path\": \"/api/auth/registro\"\n}"
             }
           ]
         }
@@ -141,7 +145,7 @@
       "name": "Pedidos",
       "item": [
         {
-          "name": "Criar Pedido",
+          "name": "T03 - Criar pedido com estoque suficiente",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -154,7 +158,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos"]
             },
-            "description": "Cria novo pedido. Valida estoque antes de confirmar."
+            "description": "T03 - Positivo. Cria pedido com estoque disponível. Deve retornar 201 com status AGUARDANDO_PAGAMENTO."
           },
           "response": [
             {
@@ -163,9 +167,80 @@
               "code": 201,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T04 - Criar pedido com canalPedido ausente (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 }\n  ]\n}"
             },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            },
+            "description": "T04 - Negativo. Campo obrigatório canalPedido ausente. Deve retornar 400."
+          },
+          "response": [
             {
-              "name": "409 Estoque insuficiente",
+              "name": "400 Bad Request",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Campo obrigatório ausente.\",\n  \"details\": [\n    { \"field\": \"canalPedido\", \"issue\": \"Campo obrigatório não informado.\" }\n  ],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T05 - Criar pedido com produto inexistente (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"APP\",\n  \"itens\": [\n    { \"produtoId\": 9999, \"quantidade\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            },
+            "description": "T05 - Negativo. Produto com ID inexistente. Deve retornar 404."
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"NOT_FOUND\",\n  \"message\": \"Produto não encontrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T06 - Criar pedido com estoque insuficiente (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"TOTEM\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 9999 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            },
+            "description": "T06 - Negativo. Quantidade maior que estoque disponível. Deve retornar 409."
+          },
+          "response": [
+            {
+              "name": "409 Conflict",
               "status": "Conflict",
               "code": 409,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -174,7 +249,7 @@
           ]
         },
         {
-          "name": "Listar Pedidos",
+          "name": "Listar Pedidos por unidade e status",
           "request": {
             "method": "GET",
             "header": [],
@@ -189,7 +264,7 @@
                 { "key": "status", "value": "EM_PREPARACAO" }
               ]
             },
-            "description": "Lista pedidos com filtros. Pelo menos um filtro obrigatório."
+            "description": "Positivo. Lista pedidos com filtros. Ao menos um filtro obrigatório."
           },
           "response": [
             {
@@ -198,13 +273,31 @@
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "[\n  {\n    \"pedidoId\": 42,\n    \"status\": \"EM_PREPARACAO\",\n    \"total\": 89.70,\n    \"itens\": [\n      { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n    ],\n    \"createdAt\": \"2026-05-19T15:33:08Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Listar Pedidos por canal (canalPedido)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos?canalPedido=TOTEM",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"],
+              "query": [
+                { "key": "canalPedido", "value": "TOTEM" }
+              ]
             },
+            "description": "Positivo. Filtra pedidos pelo canal de atendimento (multicanalidade)."
+          },
+          "response": [
             {
-              "name": "400 Sem filtros",
-              "status": "Bad Request",
-              "code": 400,
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Informe ao menos um filtro para listar pedidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "[\n  {\n    \"pedidoId\": 43,\n    \"status\": \"AGUARDANDO_PAGAMENTO\",\n    \"total\": 45.90,\n    \"itens\": [\n      { \"produtoId\": 5, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n    ],\n    \"createdAt\": \"2026-05-21T11:02:17Z\"\n  }\n]"
             }
           ]
         },
@@ -218,7 +311,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos", "42"]
             },
-            "description": "Retorna os detalhes de um pedido específico."
+            "description": "Positivo. Retorna detalhes de um pedido específico."
           },
           "response": [
             {
@@ -226,19 +319,12 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"EM_PREPARACAO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
-            },
-            {
-              "name": "404 Não encontrado",
-              "status": "Not Found",
-              "code": 404,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"NOT_FOUND\",\n  \"message\": \"Pedido não encontrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos/42\"\n}"
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
             }
           ]
         },
         {
-          "name": "Atualizar Status do Pedido",
+          "name": "T07 - Atualizar status do pedido (GERENTE)",
           "request": {
             "method": "PATCH",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -251,7 +337,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos", "42", "status"]
             },
-            "description": "Atualiza o status de um pedido. Permissões por cargo: ATENDENTE (AGUARDANDO_PAGAMENTO→EM_PREPARACAO), COZINHA (EM_PREPARACAO→EM_ENTREGA), GERENTE (qualquer)."
+            "description": "T07 - Positivo. Gerente atualiza status do pedido."
           },
           "response": [
             {
@@ -260,13 +346,6 @@
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"EM_PREPARACAO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
-            },
-            {
-              "name": "403 Sem permissão",
-              "status": "Forbidden",
-              "code": 403,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/status\"\n}"
             }
           ]
         },
@@ -280,7 +359,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos", "42", "cancelar"]
             },
-            "description": "Cancela um pedido e restaura o estoque dos itens."
+            "description": "Positivo. Cancela um pedido e restaura estoque."
           },
           "response": [
             {
@@ -289,13 +368,6 @@
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"CANCELADO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
-            },
-            {
-              "name": "400 Pedido já entregue",
-              "status": "Bad Request",
-              "code": 400,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Pedido já entregue não pode ser cancelado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/cancelar\"\n}"
             }
           ]
         }
@@ -305,7 +377,7 @@
       "name": "Pagamentos",
       "item": [
         {
-          "name": "Processar Pagamento",
+          "name": "T08 - Pagamento mock aprovado",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -318,7 +390,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pagamentos"]
             },
-            "description": "Processa o pagamento de um pedido. Use simularFalha: true para testar cenário de recusa."
+            "description": "T08 - Positivo. Pagamento aprovado. Status do pedido deve avançar para EM_PREPARACAO."
           },
           "response": [
             {
@@ -327,7 +399,26 @@
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"pagamentoId\": 18,\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"PIX\",\n  \"statusPagamento\": \"APROVADO\",\n  \"statusPedido\": \"EM_PREPARACAO\",\n  \"valor\": 89.70\n}"
+            }
+          ]
+        },
+        {
+          "name": "T09 - Pagamento mock recusado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"CREDITO\",\n  \"simularFalha\": true\n}"
             },
+            "url": {
+              "raw": "{{baseUrl}}/api/pagamentos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pagamentos"]
+            },
+            "description": "T09 - Negativo (regra de negócio). Pagamento recusado pela operadora. Status permanece AGUARDANDO_PAGAMENTO e response inclui mensagem explicativa."
+          },
+          "response": [
             {
               "name": "200 Recusado",
               "status": "OK",
@@ -340,10 +431,10 @@
       ]
     },
     {
-      "name": "Acesso sem autenticação (401)",
+      "name": "Erros",
       "item": [
         {
-          "name": "Requisição sem cookie JWT",
+          "name": "T10 - Requisição sem cookie JWT (401)",
           "request": {
             "method": "GET",
             "header": [],
@@ -353,15 +444,63 @@
               "path": ["api", "pedidos"],
               "query": [{ "key": "unidadeId", "value": "1" }]
             },
-            "description": "Simula acesso sem token JWT. Deve retornar 401."
+            "description": "T10 - Negativo. Acesso a endpoint protegido sem token JWT. Deve retornar 401."
           },
           "response": [
             {
-              "name": "401 Não autenticado",
+              "name": "401 Unauthorized",
               "status": "Unauthorized",
               "code": 401,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Token de autenticação ausente ou inválido.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-24T10:15:52Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T11 - Acesso com cargo sem permissão (403)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ENTREGUE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/42/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "42", "status"]
+            },
+            "description": "T11 - Negativo. Cargo ATENDENTE tentando transição de status não permitida. Deve retornar 403. (Faça login como ATENDENTE antes de executar.)"
+          },
+          "response": [
+            {
+              "name": "403 Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/status\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T12 - Listar pedidos sem filtros (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            },
+            "description": "T12 - Negativo. Listagem sem nenhum filtro. Deve retornar 400."
+          },
+          "response": [
+            {
+              "name": "400 Bad Request",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Informe ao menos um filtro para listar pedidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos\"\n}"
             }
           ]
         }
