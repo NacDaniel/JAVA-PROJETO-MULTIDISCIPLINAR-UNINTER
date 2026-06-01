@@ -18,6 +18,8 @@ import com.danielnac.multidisciplinar.repository.ItemPedidoRepository;
 import com.danielnac.multidisciplinar.repository.PedidoRepository;
 import com.danielnac.multidisciplinar.repository.ProdutoRepository;
 import com.danielnac.multidisciplinar.support.SessionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ import java.util.List;
 
 @Service
 public class PedidoService {
+
+    private static final Logger log = LoggerFactory.getLogger(PedidoService.class);
 
     @Autowired
     private PedidoRepository pedidoRepository;
@@ -69,6 +73,9 @@ public class PedidoService {
             itensResponse.add(new PedidoResponse.ItemResponse(item.produtoId(), item.quantidade(), produto.getPreco()));
         }
 
+        log.info("Pedido criado: id={} canal={} unidade={} total={} usuario={}",
+                pedidoId, request.canalPedido(), request.unidadeId(), valorTotal, SessionUtil.getId());
+
         return new PedidoResponse(pedidoId, StatusPedido.AGUARDANDO_PAGAMENTO, valorTotal, itensResponse, LocalDateTime.now());
     }
 
@@ -87,16 +94,21 @@ public class PedidoService {
         return pedidoRepository.listar(unidadeId, clienteId, canal, status);
     }
 
-    public void atualizarStatus(Integer id, StatusPedido novoStatus) {
+    public PedidoResponse atualizarStatus(Integer id, StatusPedido novoStatus) {
         Pedido pedido = obterPorId(id);
 
         String cargo = SessionUtil.getCargo();
         validarTransicaoStatus(pedido.getStatus(), novoStatus, cargo);
 
         pedidoRepository.atualizarStatus(id, novoStatus);
+
+        log.info("Status do pedido atualizado: id={} de={} para={} usuario={} cargo={}",
+                id, pedido.getStatus(), novoStatus, SessionUtil.getId(), cargo);
+
+        return buildResponse(id, novoStatus);
     }
 
-    public void cancelar(Integer id) {
+    public PedidoResponse cancelar(Integer id) {
         Pedido pedido = obterPorId(id);
 
         if (StatusPedido.ENTREGUE.equals(pedido.getStatus()) || StatusPedido.CANCELADO.equals(pedido.getStatus())) {
@@ -114,6 +126,19 @@ public class PedidoService {
         }
 
         pedidoRepository.atualizarStatus(id, StatusPedido.CANCELADO);
+
+        log.info("Pedido cancelado: id={} usuario={} cargo={}", id, SessionUtil.getId(), cargo);
+
+        return buildResponse(id, StatusPedido.CANCELADO);
+    }
+
+    private PedidoResponse buildResponse(Integer pedidoId, StatusPedido status) {
+        Pedido pedido = pedidoRepository.obterPorId(pedidoId);
+        List<ItemPedido> itens = itemPedidoRepository.listarPorPedido(pedidoId);
+        List<PedidoResponse.ItemResponse> itensResponse = itens.stream()
+                .map(i -> new PedidoResponse.ItemResponse(i.getProdutoId(), i.getQuantidade(), i.getPrecoUnitario()))
+                .toList();
+        return new PedidoResponse(pedidoId, status, pedido.getValorTotal(), itensResponse, pedido.getDataCriacao());
     }
 
     private void validarTransicaoStatus(StatusPedido atual, StatusPedido novo, String cargo) {

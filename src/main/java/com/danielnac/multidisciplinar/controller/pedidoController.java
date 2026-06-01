@@ -40,16 +40,14 @@ public class pedidoController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> atualizarStatus(
+    public ResponseEntity<PedidoResponse> atualizarStatus(
             @PathVariable Integer id,
             @RequestBody AtualizarStatusRequest request) {
-        pedidoService.atualizarStatus(id, request.status());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(pedidoService.atualizarStatus(id, request.status()));
     }
 
     @PatchMapping("/{id}/cancelar")
-    public ResponseEntity<Void> cancelar(@PathVariable Integer id) {
-        pedidoService.cancelar(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<PedidoResponse> cancelar(@PathVariable Integer id) {
+        return ResponseEntity.ok(pedidoService.cancelar(id));
     }
 }

@@ -14,12 +14,9 @@ public class pagamentoController {
     @Autowired
     private PagamentoService pagamentoService;
 
-    @PostMapping("/{pedidoId}")
-    public ResponseEntity<PagamentoResponse> processar(
-            @PathVariable Integer pedidoId,
-            @RequestBody PagamentoRequest request) {
-
-        PagamentoResponse response = pagamentoService.processar(pedidoId, request);
+    @PostMapping
+    public ResponseEntity<PagamentoResponse> processar(@RequestBody PagamentoRequest request) {
+        PagamentoResponse response = pagamentoService.processar(request.pedidoId(), request);
         return ResponseEntity.ok(response);
     }
 }

@@ -10,11 +10,15 @@ import com.danielnac.multidisciplinar.model.Pagamento;
 import com.danielnac.multidisciplinar.model.Pedido;
 import com.danielnac.multidisciplinar.repository.PagamentoRepository;
 import com.danielnac.multidisciplinar.repository.PedidoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PagamentoService {
+
+    private static final Logger log = LoggerFactory.getLogger(PagamentoService.class);
 
     @Autowired
     private PagamentoRepository pagamentoRepository;
@@ -49,6 +53,7 @@ public class PagamentoService {
         Integer pagamentoId = pagamentoRepository.incluir(pagamento);
 
         if (recusado) {
+            log.warn("Pagamento recusado: pedidoId={} forma={} pagamentoId={}", pedidoId, request.formaPagamento(), pagamentoId);
             return new PagamentoResponse(
                     pagamentoId,
                     pedidoId,
@@ -61,6 +66,7 @@ public class PagamentoService {
         }
 
         pedidoRepository.atualizarStatus(pedidoId, StatusPedido.EM_PREPARACAO);
+        log.info("Pagamento aprovado: pedidoId={} forma={} valor={} pagamentoId={}", pedidoId, request.formaPagamento(), pedido.getValorTotal(), pagamentoId);
 
         return new PagamentoResponse(
                 pagamentoId,
