@@ -7,6 +7,7 @@ import com.danielnac.multidisciplinar.enums.CanaisAtendimento;
 import com.danielnac.multidisciplinar.enums.StatusPedido;
 import com.danielnac.multidisciplinar.model.Pedido;
 import com.danielnac.multidisciplinar.service.PedidoService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +41,16 @@ public class pedidoController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<PedidoResponse> atualizarStatus(
+    public ResponseEntity<Void> atualizarStatus(
             @PathVariable Integer id,
             @RequestBody AtualizarStatusRequest request) {
-        return ResponseEntity.ok(pedidoService.atualizarStatus(id, request.status()));
+        pedidoService.atualizarStatus(id, request.status());
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/cancelar")
-    public ResponseEntity<PedidoResponse> cancelar(@PathVariable Integer id) {
-        return ResponseEntity.ok(pedidoService.cancelar(id));
+    public ResponseEntity<Void> cancelar(@PathVariable Integer id) {
+        pedidoService.cancelar(id);
+        return ResponseEntity.noContent().build();
     }
 }

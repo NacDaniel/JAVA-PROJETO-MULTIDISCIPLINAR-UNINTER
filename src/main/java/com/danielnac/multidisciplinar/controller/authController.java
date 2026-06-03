@@ -1,6 +1,5 @@
 package com.danielnac.multidisciplinar.controller;
 
-import com.danielnac.multidisciplinar.dto.AlterarSenhaRequest;
 import com.danielnac.multidisciplinar.dto.RegistroRequest;
 import com.danielnac.multidisciplinar.dto.TokenDTO;
 import com.danielnac.multidisciplinar.model.Usuario;
@@ -68,8 +67,11 @@ public class authController {
     }
 
     @PutMapping("/alterar-senha")
-    public ResponseEntity<Void> alterarSenha(@RequestBody AlterarSenhaRequest request) {
-        authService.alterarSenha(SessionUtil.getId(), request.senhaAtual(), request.senhaNova(), request.confirmacaoSenhaNova());
+    public ResponseEntity<Void> alterarSenha(
+            @RequestHeader("senhaAtual") String senhaAtual,
+            @RequestHeader("senhaNova") String senhaNova,
+            @RequestHeader("senhaNovaValidate") String senhaNovaValidate) {
+        authService.alterarSenha(SessionUtil.getId(), senhaAtual, senhaNova, senhaNovaValidate);
         return ResponseEntity.noContent().build();
     }
 }

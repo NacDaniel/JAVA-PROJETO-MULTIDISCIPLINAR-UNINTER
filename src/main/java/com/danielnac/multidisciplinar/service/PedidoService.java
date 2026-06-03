@@ -94,7 +94,7 @@ public class PedidoService {
         return pedidoRepository.listar(unidadeId, clienteId, canal, status);
     }
 
-    public PedidoResponse atualizarStatus(Integer id, StatusPedido novoStatus) {
+    public void atualizarStatus(Integer id, StatusPedido novoStatus) {
         Pedido pedido = obterPorId(id);
 
         String cargo = SessionUtil.getCargo();
@@ -104,11 +104,9 @@ public class PedidoService {
 
         log.info("Status do pedido atualizado: id={} de={} para={} usuario={} cargo={}",
                 id, pedido.getStatus(), novoStatus, SessionUtil.getId(), cargo);
-
-        return buildResponse(id, novoStatus);
     }
 
-    public PedidoResponse cancelar(Integer id) {
+    public void cancelar(Integer id) {
         Pedido pedido = obterPorId(id);
 
         if (StatusPedido.ENTREGUE.equals(pedido.getStatus()) || StatusPedido.CANCELADO.equals(pedido.getStatus())) {
@@ -128,17 +126,6 @@ public class PedidoService {
         pedidoRepository.atualizarStatus(id, StatusPedido.CANCELADO);
 
         log.info("Pedido cancelado: id={} usuario={} cargo={}", id, SessionUtil.getId(), cargo);
-
-        return buildResponse(id, StatusPedido.CANCELADO);
-    }
-
-    private PedidoResponse buildResponse(Integer pedidoId, StatusPedido status) {
-        Pedido pedido = pedidoRepository.obterPorId(pedidoId);
-        List<ItemPedido> itens = itemPedidoRepository.listarPorPedido(pedidoId);
-        List<PedidoResponse.ItemResponse> itensResponse = itens.stream()
-                .map(i -> new PedidoResponse.ItemResponse(i.getProdutoId(), i.getQuantidade(), i.getPrecoUnitario()))
-                .toList();
-        return new PedidoResponse(pedidoId, status, pedido.getValorTotal(), itensResponse, pedido.getDataCriacao());
     }
 
     private void validarTransicaoStatus(StatusPedido atual, StatusPedido novo, String cargo) {
