@@ -91,17 +91,17 @@
           "name": "Alterar Senha",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"senhaAtual\": \"senha123\",\n  \"senhaNova\": \"novaSenha456\",\n  \"confirmacaoSenhaNova\": \"novaSenha456\"\n}"
-            },
+            "header": [
+              { "key": "senhaAtual", "value": "senha123", "type": "text" },
+              { "key": "senhaNova", "value": "NovaSenha@456", "type": "text" },
+              { "key": "senhaNovaValidate", "value": "NovaSenha@456", "type": "text" }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/alterar-senha",
               "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "alterar-senha"]
             },
-            "description": "Altera senha do usuário autenticado. Requer cookie JWT."
+            "description": "Altera senha do usuário autenticado. Credenciais enviadas via headers. Requer cookie JWT."
           },
           "response": [
             {
@@ -383,14 +383,14 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"PIX\",\n  \"simularFalha\": false\n}"
+              "raw": "{\n  \"formaPagamento\": \"PIX\",\n  \"simularFalha\": false\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/pagamentos",
+              "raw": "{{baseUrl}}/api/pagamentos/42",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pagamentos"]
+              "path": ["api", "pagamentos", "42"]
             },
-            "description": "T08 - Positivo. Pagamento aprovado. Status do pedido deve avançar para EM_PREPARACAO."
+            "description": "T08 - Positivo. Pagamento aprovado. pedidoId no path. Status do pedido deve avançar para EM_PREPARACAO."
           },
           "response": [
             {
@@ -409,14 +409,14 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"CREDITO\",\n  \"simularFalha\": true\n}"
+              "raw": "{\n  \"formaPagamento\": \"CREDITO\",\n  \"simularFalha\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/pagamentos",
+              "raw": "{{baseUrl}}/api/pagamentos/42",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pagamentos"]
+              "path": ["api", "pagamentos", "42"]
             },
-            "description": "T09 - Negativo (regra de negócio). Pagamento recusado pela operadora. Status permanece AGUARDANDO_PAGAMENTO e response inclui mensagem explicativa."
+            "description": "T09 - Negativo (regra de negócio). Pagamento recusado. pedidoId no path. Status permanece AGUARDANDO_PAGAMENTO e response inclui mensagem explicativa."
           },
           "response": [
             {

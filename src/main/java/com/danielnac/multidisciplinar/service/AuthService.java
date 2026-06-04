@@ -2,8 +2,8 @@ package com.danielnac.multidisciplinar.service;
 
 import com.danielnac.multidisciplinar.dto.RegistroRequest;
 import com.danielnac.multidisciplinar.exception.BadRequestException;
+import com.danielnac.multidisciplinar.exception.ConflictException;
 import com.danielnac.multidisciplinar.exception.ForbiddenException;
-import com.danielnac.multidisciplinar.exception.NotFoundException;
 import com.danielnac.multidisciplinar.exception.UnauthorizedException;
 import com.danielnac.multidisciplinar.model.Usuario;
 import com.danielnac.multidisciplinar.repository.UsuarioRepository;
@@ -31,7 +31,7 @@ public class AuthService {
         validarEmail(request.email());
 
         if (usuarioRepository.obterPorEmail(request.email()) != null) {
-            throw new BadRequestException("E-mail já cadastrado.");
+            throw new ConflictException("E-mail já está em uso.", "CONFLICT");
         }
 
         if (request.nome() == null || request.nome().isBlank()) {
@@ -99,11 +99,8 @@ public class AuthService {
     }
 
     private void validarUsuario(Usuario usuario, String senha) {
-        if (usuario == null) {
-            throw new NotFoundException("Usuário não encontrado.");
-        }
-        if (!PasswordHelper.validate(senha, usuario.getSenha())) {
-            throw new UnauthorizedException("Senha inválida.");
+        if (usuario == null || !PasswordHelper.validate(senha, usuario.getSenha())) {
+            throw new UnauthorizedException("E-mail ou senha inválidos.");
         }
         if (!usuario.getAtivo()) {
             throw new ForbiddenException("Usuário inativo.");
