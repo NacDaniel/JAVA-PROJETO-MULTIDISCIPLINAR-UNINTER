@@ -142,11 +142,11 @@ CREATE TABLE fidelidade (
 -- Unidade
 INSERT INTO unidades (nome, cidade) VALUES ('Unidade Centro', 'Fortaleza');
 
--- Usuários (senhas em BCrypt — "senha123")
+-- Usuários (senhas em BCrypt — "Senha@123")
 INSERT INTO usuarios (nome, email, senha, cargo, unidade_id) VALUES
-('Carlos Gerente', 'gerente@raizes.com', '$2a$10$7EqJtq98hPqEX7fNZaFWoOkKxrWAqSEbFqKM.J5.Gw4XKaYB6B6y6', 'GERENTE', 1),
-('Ana Atendente', 'atendente@raizes.com', '$2a$10$7EqJtq98hPqEX7fNZaFWoOkKxrWAqSEbFqKM.J5.Gw4XKaYB6B6y6', 'ATENDENTE', 1),
-('João Cozinha', 'cozinha@raizes.com', '$2a$10$7EqJtq98hPqEX7fNZaFWoOkKxrWAqSEbFqKM.J5.Gw4XKaYB6B6y6', 'COZINHA', 1);
+('Carlos Gerente', 'gerente@raizes.com', '$2a$10$944UVM9lZNIspIucUF3XmOJ.0To/fHVqY/NdF/GD2rHuwGCIu.zYq', 'GERENTE', 1),
+('Ana Atendente', 'atendente@raizes.com', '$2a$10$944UVM9lZNIspIucUF3XmOJ.0To/fHVqY/NdF/GD2rHuwGCIu.zYq', 'ATENDENTE', 1),
+('João Cozinha', 'cozinha@raizes.com', '$2a$10$944UVM9lZNIspIucUF3XmOJ.0To/fHVqY/NdF/GD2rHuwGCIu.zYq', 'COZINHA', 1);
 
 -- Produtos
 INSERT INTO produtos (nome, descricao, preco, categoria) VALUES

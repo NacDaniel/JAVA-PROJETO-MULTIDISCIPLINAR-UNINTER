@@ -21,7 +21,7 @@
             "method": "POST",
             "header": [
               { "key": "email", "value": "gerente@raizes.com", "type": "text" },
-              { "key": "senha", "value": "senha123", "type": "text" }
+              { "key": "senha", "value": "Senha@123", "type": "text" }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
@@ -92,7 +92,7 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "senhaAtual", "value": "senha123", "type": "text" },
+              { "key": "senhaAtual", "value": "Senha@123", "type": "text" },
               { "key": "senhaNova", "value": "NovaSenha@456", "type": "text" },
               { "key": "senhaNovaValidate", "value": "NovaSenha@456", "type": "text" }
             ],
@@ -120,7 +120,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"senha\": \"senha123\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
+              "raw": "{\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"senha\": \"Senha@123\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/registro",
