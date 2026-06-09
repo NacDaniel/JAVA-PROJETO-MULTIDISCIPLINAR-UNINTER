@@ -2,6 +2,8 @@ package com.danielnac.multidisciplinar.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     public record ErrorDetail(String field, String issue) {}
 
@@ -61,6 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
+        log.error("Erro interno em {}: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ResponseEntity.internalServerError().body(new ErrorResponse(
                 "ERRO_INTERNO",
                 "Erro interno no servidor.",
