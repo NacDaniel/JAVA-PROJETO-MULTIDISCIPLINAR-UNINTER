@@ -69,7 +69,9 @@ CREATE TABLE usuarios (
 CREATE TABLE unidades (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
+    endereco VARCHAR(255),
     cidade VARCHAR(100),
+    uf VARCHAR(2),
     ativo BOOLEAN DEFAULT TRUE
 );
 
@@ -128,12 +130,37 @@ CREATE TABLE pagamentos (
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
 );
 
--- Fidelidade (pontos)
-CREATE TABLE fidelidade (
+-- Clientes
+CREATE TABLE clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    telefone VARCHAR(20),
+    cpf VARCHAR(14),
+    aceite_lgpd BOOLEAN NOT NULL DEFAULT FALSE,
+    data_consentimento_lgpd DATETIME,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Fidelidade por cliente
+CREATE TABLE fidelidade_clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL UNIQUE,
+    pontos INT NOT NULL DEFAULT 0,
+    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+-- Histórico de pontos
+CREATE TABLE fidelidade_historico (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,
-    pontos INT NOT NULL DEFAULT 0,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    pedido_id INT,
+    pontos INT NOT NULL,
+    descricao VARCHAR(255),
+    data DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
 );
 ```
 
@@ -141,7 +168,7 @@ CREATE TABLE fidelidade (
 
 ```sql
 -- Unidade
-INSERT INTO unidades (nome, cidade) VALUES ('Unidade Centro', 'Fortaleza');
+INSERT INTO unidades (nome, endereco, cidade, uf) VALUES ('Unidade Centro', 'Av. Beira Mar, 100', 'Fortaleza', 'CE');
 
 -- Usuários (senhas em BCrypt — "Senha@123")
 INSERT INTO usuarios (nome, email, senha, cargo, unidade_id) VALUES
