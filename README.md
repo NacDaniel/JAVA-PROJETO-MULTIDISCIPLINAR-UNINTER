@@ -231,9 +231,9 @@ raizes-api.postman_collection.json
 |---|---|---|
 | 1 | Auth | T01 - Login válido (obtém o cookie JWT) |
 | 2 | Pedidos | T03 - Criar pedido com estoque suficiente |
-| 3 | Pagamentos | T08 - Pagamento mock aprovado |
-| 4 | Pedidos | T07 - Atualizar status do pedido |
-| 5 | Pagamentos | T09 - Pagamento mock recusado |
+| 3 | Pagamentos | T09 - Pagamento mock recusado |
+| 4 | Pagamentos | T08 - Pagamento mock aprovado |
+| 5 | Pedidos | T07 - Atualizar status do pedido |
 | 6 | Erros | T10 - Requisição sem cookie JWT (401) |
 | 7 | Erros | T11 - Acesso com cargo sem permissão (403) |
 | 8 | Auth | T02 - Login com credenciais inválidas (401) |

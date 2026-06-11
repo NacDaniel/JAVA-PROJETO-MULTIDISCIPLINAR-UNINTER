@@ -9,6 +9,11 @@
       "key": "baseUrl",
       "value": "http://localhost:8080",
       "type": "string"
+    },
+    {
+      "key": "pedidoId",
+      "value": "1",
+      "type": "string"
     }
   ],
   "item": [
@@ -36,7 +41,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-05-29T10:32:14Z\"\n}"
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-06-30T10:32:14Z\"\n}"
             }
           ]
         },
@@ -61,7 +66,7 @@
               "status": "Unauthorized",
               "code": 401,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"E-mail ou senha inválidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-15T09:28:55Z\",\n  \"path\": \"/api/auth/login\"\n}"
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"E-mail ou senha inválidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T09:28:55Z\",\n  \"path\": \"/api/auth/login\"\n}"
             }
           ]
         },
@@ -134,8 +139,8 @@
               "name": "201 Created",
               "status": "Created",
               "code": 201,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"id\": 5,\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"ana@raizes.com\",\n  \"cargo\": \"ATENDENTE\",\n  \"unidadeId\": 1\n}"
+              "header": [],
+              "body": ""
             }
           ]
         }
@@ -146,6 +151,20 @@
       "item": [
         {
           "name": "T03 - Criar pedido com estoque suficiente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.pedidoId) {",
+                  "    pm.collectionVariables.set('pedidoId', jsonData.pedidoId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -158,7 +177,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos"]
             },
-            "description": "T03 - Positivo. Cria pedido com estoque disponível. Deve retornar 201 com status AGUARDANDO_PAGAMENTO."
+            "description": "T03 - Positivo. Cria pedido com estoque disponível. Salva pedidoId na variável de coleção. Produtos: Tapioca (id=3) x2 + Carne de Sol (id=2) x1."
           },
           "response": [
             {
@@ -166,7 +185,7 @@
               "status": "Created",
               "code": 201,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 112.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 2, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+              "body": "{\n  \"pedidoId\": 1,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 93.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 23.90 },\n    { \"produtoId\": 2, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n  ],\n  \"createdAt\": \"2026-06-30T10:00:00Z\"\n}"
             }
           ]
         },
@@ -192,7 +211,7 @@
               "status": "Bad Request",
               "code": 400,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Campo obrigatório ausente.\",\n  \"details\": [\n    { \"field\": \"canalPedido\", \"issue\": \"Campo obrigatório não informado.\" }\n  ],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Campo obrigatório ausente.\",\n  \"details\": [\n    { \"field\": \"canalPedido\", \"issue\": \"Campo obrigatório não informado.\" }\n  ],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
             }
           ]
         },
@@ -218,7 +237,7 @@
               "status": "Not Found",
               "code": 404,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"NOT_FOUND\",\n  \"message\": \"Produto não encontrado.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "{\n  \"error\": \"NOT_FOUND\",\n  \"message\": \"Produto 9999 não encontrado ou inativo.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
             }
           ]
         },
@@ -244,7 +263,33 @@
               "status": "Conflict",
               "code": 409,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"CONFLICT\",\n  \"message\": \"Estoque insuficiente para o produto 3.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-19T15:33:08Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "{\n  \"error\": \"ESTOQUE_INSUFICIENTE\",\n  \"message\": \"Estoque insuficiente para o produto: Tapioca Recheada.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T07 - Atualizar status do pedido para EM_ENTREGA",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"EM_ENTREGA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "{{pedidoId}}", "status"]
+            },
+            "description": "T07 - Positivo. Gerente avança status do pedido de EM_PREPARACAO para EM_ENTREGA. Execute após T08."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
             }
           ]
         },
@@ -259,8 +304,6 @@
               "path": ["api", "pedidos"],
               "query": [
                 { "key": "unidadeId", "value": "1" },
-                { "key": "clienteId", "value": "", "disabled": true },
-                { "key": "canalPedido", "value": "", "disabled": true },
                 { "key": "status", "value": "EM_PREPARACAO" }
               ]
             },
@@ -272,32 +315,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "[\n  {\n    \"pedidoId\": 42,\n    \"status\": \"EM_PREPARACAO\",\n    \"total\": 89.70,\n    \"itens\": [\n      { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n    ],\n    \"createdAt\": \"2026-05-19T15:33:08Z\"\n  }\n]"
-            }
-          ]
-        },
-        {
-          "name": "Listar Pedidos por canal (canalPedido)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/pedidos?canalPedido=TOTEM",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos"],
-              "query": [
-                { "key": "canalPedido", "value": "TOTEM" }
-              ]
-            },
-            "description": "Positivo. Filtra pedidos pelo canal de atendimento (multicanalidade)."
-          },
-          "response": [
-            {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "[\n  {\n    \"pedidoId\": 43,\n    \"status\": \"AGUARDANDO_PAGAMENTO\",\n    \"total\": 45.90,\n    \"itens\": [\n      { \"produtoId\": 5, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n    ],\n    \"createdAt\": \"2026-05-21T11:02:17Z\"\n  }\n]"
+              "body": "[\n  {\n    \"id\": 1,\n    \"unidadeId\": 1,\n    \"canalPedido\": \"BALCAO\",\n    \"status\": \"EM_PREPARACAO\",\n    \"valorTotal\": 93.70,\n    \"dataCriacao\": \"2026-06-30T10:00:00\"\n  }\n]"
             }
           ]
         },
@@ -307,9 +325,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/pedidos/42",
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos", "42"]
+              "path": ["api", "pedidos", "{{pedidoId}}"]
             },
             "description": "Positivo. Retorna detalhes de um pedido específico."
           },
@@ -319,33 +337,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 112.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 2, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "T07 - Atualizar status do pedido (GERENTE)",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"EM_PREPARACAO\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/pedidos/42/status",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos", "42", "status"]
-            },
-            "description": "T07 - Positivo. Gerente atualiza status do pedido."
-          },
-          "response": [
-            {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"EM_PREPARACAO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+              "body": "{\n  \"id\": 1,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"valorTotal\": 93.70,\n  \"dataCriacao\": \"2026-06-30T10:00:00\"\n}"
             }
           ]
         },
@@ -355,19 +347,19 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/pedidos/42/cancelar",
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/cancelar",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos", "42", "cancelar"]
+              "path": ["api", "pedidos", "{{pedidoId}}", "cancelar"]
             },
             "description": "Positivo. Cancela um pedido e restaura estoque."
           },
           "response": [
             {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"CANCELADO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
             }
           ]
         }
@@ -376,32 +368,6 @@
     {
       "name": "Pagamentos",
       "item": [
-        {
-          "name": "T08 - Pagamento mock aprovado",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"formaPagamento\": \"PIX\",\n  \"simularFalha\": false\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/pagamentos/42",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "pagamentos", "42"]
-            },
-            "description": "T08 - Positivo. Pagamento aprovado. pedidoId no path. Status do pedido deve avançar para EM_PREPARACAO."
-          },
-          "response": [
-            {
-              "name": "200 Aprovado",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pagamentoId\": 18,\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"PIX\",\n  \"statusPagamento\": \"APROVADO\",\n  \"statusPedido\": \"EM_PREPARACAO\",\n  \"valor\": 89.70\n}"
-            }
-          ]
-        },
         {
           "name": "T09 - Pagamento mock recusado",
           "request": {
@@ -412,11 +378,11 @@
               "raw": "{\n  \"formaPagamento\": \"CREDITO\",\n  \"simularFalha\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/pagamentos/42",
+              "raw": "{{baseUrl}}/api/pagamentos/{{pedidoId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pagamentos", "42"]
+              "path": ["api", "pagamentos", "{{pedidoId}}"]
             },
-            "description": "T09 - Negativo (regra de negócio). Pagamento recusado. pedidoId no path. Status permanece AGUARDANDO_PAGAMENTO e response inclui mensagem explicativa."
+            "description": "T09 - Negativo (regra de negócio). Pagamento recusado. Execute ANTES de T08 — pedido deve estar em AGUARDANDO_PAGAMENTO."
           },
           "response": [
             {
@@ -424,7 +390,33 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pagamentoId\": 19,\n  \"pedidoId\": 42,\n  \"formaPagamento\": \"CREDITO\",\n  \"statusPagamento\": \"RECUSADO\",\n  \"statusPedido\": \"AGUARDANDO_PAGAMENTO\",\n  \"valor\": 89.70,\n  \"mensagem\": \"Pagamento recusado pela operadora. Tente outro meio de pagamento.\"\n}"
+              "body": "{\n  \"pagamentoId\": 1,\n  \"pedidoId\": 1,\n  \"formaPagamento\": \"CREDITO\",\n  \"statusPagamento\": \"RECUSADO\",\n  \"statusPedido\": \"AGUARDANDO_PAGAMENTO\",\n  \"valor\": 93.70,\n  \"mensagem\": \"Pagamento recusado pela operadora. Tente outro meio de pagamento.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T08 - Pagamento mock aprovado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formaPagamento\": \"PIX\",\n  \"simularFalha\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pagamentos/{{pedidoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pagamentos", "{{pedidoId}}"]
+            },
+            "description": "T08 - Positivo. Pagamento aprovado. Status do pedido deve avançar para EM_PREPARACAO."
+          },
+          "response": [
+            {
+              "name": "200 Aprovado",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"pagamentoId\": 2,\n  \"pedidoId\": 1,\n  \"formaPagamento\": \"PIX\",\n  \"statusPagamento\": \"APROVADO\",\n  \"statusPedido\": \"EM_PREPARACAO\",\n  \"valor\": 93.70\n}"
             }
           ]
         }
@@ -452,7 +444,7 @@
               "status": "Unauthorized",
               "code": 401,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Token de autenticação ausente ou inválido.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-24T10:15:52Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Token de autenticação ausente ou inválido.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
             }
           ]
         },
@@ -463,12 +455,12 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"ENTREGUE\"\n}"
+              "raw": "{\n  \"status\": \"EM_ENTREGA\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/pedidos/42/status",
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/status",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos", "42", "status"]
+              "path": ["api", "pedidos", "{{pedidoId}}", "status"]
             },
             "description": "T11 - Negativo. Cargo ATENDENTE tentando transição de status não permitida. Deve retornar 403. (Faça login como ATENDENTE antes de executar.)"
           },
@@ -478,7 +470,7 @@
               "status": "Forbidden",
               "code": 403,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-22T14:28:39Z\",\n  \"path\": \"/api/pedidos/42/status\"\n}"
+              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos/1/status\"\n}"
             }
           ]
         },
@@ -500,7 +492,7 @@
               "status": "Bad Request",
               "code": 400,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Informe ao menos um filtro para listar pedidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-05-21T11:02:17Z\",\n  \"path\": \"/api/pedidos\"\n}"
+              "body": "{\n  \"error\": \"BAD_REQUEST\",\n  \"message\": \"Informe ao menos um filtro para listar pedidos.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
             }
           ]
         }
