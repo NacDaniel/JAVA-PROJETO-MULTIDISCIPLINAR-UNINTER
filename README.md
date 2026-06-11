@@ -229,18 +229,20 @@ raizes-api.postman_collection.json
 
 | # | Pasta | Requisição |
 |---|---|---|
-| 1 | Auth | T01 - Login válido (obtém o cookie JWT) |
+| 1 | Auth | T01 - Login válido (obtém o cookie JWT como GERENTE) |
 | 2 | Pedidos | T03 - Criar pedido com estoque suficiente |
 | 3 | Pagamentos | T09 - Pagamento mock recusado |
 | 4 | Pagamentos | T08 - Pagamento mock aprovado |
 | 5 | Pedidos | T07 - Atualizar status do pedido |
 | 6 | Erros | T10 - Requisição sem cookie JWT (401) |
-| 7 | Erros | T11 - Acesso com cargo sem permissão (403) |
-| 8 | Auth | T02 - Login com credenciais inválidas (401) |
-| 9 | Pedidos | T04 - Campo canalPedido ausente (400) |
-| 10 | Pedidos | T05 - Produto inexistente (404) |
-| 11 | Pedidos | T06 - Estoque insuficiente (409) |
-| 12 | Erros | T12 - Listar sem filtros (400) |
+| 7 | Erros | T11 Setup - Login como Atendente |
+| 8 | Erros | T11 - Acesso com cargo sem permissão (403) |
+| 9 | Erros | T11 Teardown - Login como Gerente (restaurar cookie) |
+| 10 | Auth | T02 - Login com credenciais inválidas (401) |
+| 11 | Pedidos | T04 - Campo canalPedido ausente (400) |
+| 12 | Pedidos | T05 - Produto inexistente (404) |
+| 13 | Pedidos | T06 - Estoque insuficiente (409) |
+| 14 | Erros | T12 - Listar sem filtros (400) |
 
 > **Autenticação:** o JWT é retornado como cookie `httpOnly` no login. O Postman gerencia o cookie automaticamente após o T01.
 
