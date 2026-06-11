@@ -137,16 +137,18 @@ public class PedidoService {
         }
 
         boolean isCozinhaOuGerente = "COZINHA".equals(cargo) || "GERENTE".equals(cargo);
-        boolean isAtendente = "ATENDENTE".equals(cargo) || "GERENTE".equals(cargo);
+        boolean isAtendenteOuGerente = "ATENDENTE".equals(cargo) || "GERENTE".equals(cargo);
 
-        if (StatusPedido.EM_PREPARACAO.equals(atual) && StatusPedido.EM_ENTREGA.equals(novo)) {
-            if (!isCozinhaOuGerente) throw new ForbiddenException("Apenas COZINHA ou GERENTE podem avançar para EM_ENTREGA.");
-            return;
+        // Permissão verificada antes da transição
+        if (StatusPedido.EM_PREPARACAO.equals(atual) && !isCozinhaOuGerente) {
+            throw new ForbiddenException("Apenas COZINHA ou GERENTE podem avançar para EM_ENTREGA.");
         }
-        if (StatusPedido.EM_ENTREGA.equals(atual) && StatusPedido.ENTREGUE.equals(novo)) {
-            if (!isAtendente) throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem marcar como ENTREGUE.");
-            return;
+        if (StatusPedido.EM_ENTREGA.equals(atual) && !isAtendenteOuGerente) {
+            throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem marcar como ENTREGUE.");
         }
+
+        if (StatusPedido.EM_PREPARACAO.equals(atual) && StatusPedido.EM_ENTREGA.equals(novo)) return;
+        if (StatusPedido.EM_ENTREGA.equals(atual) && StatusPedido.ENTREGUE.equals(novo)) return;
         throw new BadRequestException("Transição de status inválida: " + atual + " → " + novo + ".");
     }
 

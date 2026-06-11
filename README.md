@@ -233,11 +233,11 @@ raizes-api.postman_collection.json
 | 2 | Pedidos | T03 - Criar pedido com estoque suficiente |
 | 3 | Pagamentos | T09 - Pagamento mock recusado |
 | 4 | Pagamentos | T08 - Pagamento mock aprovado |
-| 5 | Pedidos | T07 - Atualizar status do pedido |
-| 6 | Erros | T10 - Requisição sem cookie JWT (401) |
-| 7 | Erros | T11 Setup - Login como Atendente |
-| 8 | Erros | T11 - Acesso com cargo sem permissão (403) |
-| 9 | Erros | T11 Teardown - Login como Gerente (restaurar cookie) |
+| 5 | Pedidos | T11 Setup - Login como Atendente (pedido em EM_PREPARACAO) |
+| 6 | Pedidos | T11 - Acesso com cargo sem permissão (403) |
+| 7 | Pedidos | T11 Teardown - Login como Gerente (restaurar cookie) |
+| 8 | Pedidos | T07 - Atualizar status do pedido para EM_ENTREGA |
+| 9 | Erros | T10 - Requisição sem cookie JWT (401) |
 | 10 | Auth | T02 - Login com credenciais inválidas (401) |
 | 11 | Pedidos | T04 - Campo canalPedido ausente (400) |
 | 12 | Pedidos | T05 - Produto inexistente (404) |

@@ -268,6 +268,82 @@
           ]
         },
         {
+          "name": "T11 Setup - Login como Atendente (para T11)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "email", "value": "atendente@raizes.com", "type": "text" },
+              { "key": "senha", "value": "Senha@123", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Setup para T11. Troca o cookie JWT para ATENDENTE. Execute antes de T11."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 2,\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"atendente@raizes.com\",\n  \"cargo\": \"ATENDENTE\",\n  \"dataExpiracao\": \"2026-06-30T10:32:14Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T11 - Acesso com cargo sem permissão (403)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"EM_ENTREGA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "{{pedidoId}}", "status"]
+            },
+            "description": "T11 - Negativo. ATENDENTE tenta avançar para EM_ENTREGA (exige COZINHA/GERENTE). Pedido deve estar em EM_PREPARACAO. Deve retornar 403."
+          },
+          "response": [
+            {
+              "name": "403 Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Apenas COZINHA ou GERENTE podem avançar para EM_ENTREGA.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos/1/status\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "T11 Teardown - Login como Gerente (restaurar cookie)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "email", "value": "gerente@raizes.com", "type": "text" },
+              { "key": "senha", "value": "Senha@123", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Restaura o cookie JWT para GERENTE após T11."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-06-30T10:32:14Z\"\n}"
+            }
+          ]
+        },
+        {
           "name": "T07 - Atualizar status do pedido para EM_ENTREGA",
           "request": {
             "method": "PATCH",
@@ -445,82 +521,6 @@
               "code": 401,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Token de autenticação ausente ou inválido.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "T11 Setup - Login como Atendente",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "email", "value": "atendente@raizes.com", "type": "text" },
-              { "key": "senha", "value": "Senha@123", "type": "text" }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
-            },
-            "description": "Setup para T11. Faz login como ATENDENTE para substituir o cookie JWT do GERENTE. Execute este request ANTES de T11."
-          },
-          "response": [
-            {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"id\": 2,\n  \"nome\": \"Ana Atendente\",\n  \"email\": \"atendente@raizes.com\",\n  \"cargo\": \"ATENDENTE\",\n  \"dataExpiracao\": \"2026-06-30T10:32:14Z\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "T11 - Acesso com cargo sem permissão (403)",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"EM_ENTREGA\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/status",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "pedidos", "{{pedidoId}}", "status"]
-            },
-            "description": "T11 - Negativo. Cargo ATENDENTE tentando transição de status não permitida. Deve retornar 403. (Faça login como ATENDENTE antes de executar.)"
-          },
-          "response": [
-            {
-              "name": "403 Forbidden",
-              "status": "Forbidden",
-              "code": 403,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"FORBIDDEN\",\n  \"message\": \"Cargo não autorizado para esta transição de status.\",\n  \"details\": [],\n  \"timestamp\": \"2026-06-30T10:00:00Z\",\n  \"path\": \"/api/pedidos/1/status\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "T11 Teardown - Login como Gerente (restaurar cookie)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "email", "value": "gerente@raizes.com", "type": "text" },
-              { "key": "senha", "value": "Senha@123", "type": "text" }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
-            },
-            "description": "Restaura o cookie JWT para GERENTE após T11. Execute antes de T12."
-          },
-          "response": [
-            {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"id\": 1,\n  \"nome\": \"Carlos Gerente\",\n  \"email\": \"gerente@raizes.com\",\n  \"cargo\": \"GERENTE\",\n  \"dataExpiracao\": \"2026-06-30T10:32:14Z\"\n}"
             }
           ]
         },
