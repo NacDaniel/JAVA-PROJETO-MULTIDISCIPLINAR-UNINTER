@@ -137,6 +137,9 @@ public class PedidoService {
         if (StatusPedido.EM_ENTREGA.equals(atual) && !isAtendenteOuGerente) {
             throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem marcar como ENTREGUE.");
         }
+        if (!StatusPedido.EM_PREPARACAO.equals(atual) && !StatusPedido.EM_ENTREGA.equals(atual) && !"GERENTE".equals(cargo)) {
+            throw new ForbiddenException("Sem permissão para alterar o status do pedido.");
+        }
 
         if (StatusPedido.CANCELADO.equals(atual) || StatusPedido.ENTREGUE.equals(atual)) {
             throw new BadRequestException("Não é possível alterar o status de um pedido " + atual + ".");
