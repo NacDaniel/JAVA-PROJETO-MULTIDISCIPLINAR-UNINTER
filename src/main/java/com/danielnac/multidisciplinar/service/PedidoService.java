@@ -109,13 +109,13 @@ public class PedidoService {
     public void cancelar(Integer id) {
         Pedido pedido = obterPorId(id);
 
-        if (StatusPedido.ENTREGUE.equals(pedido.getStatus()) || StatusPedido.CANCELADO.equals(pedido.getStatus())) {
-            throw new BadRequestException("Pedido não pode ser cancelado. Status atual: " + pedido.getStatus());
-        }
-
         String cargo = SessionUtil.getCargo();
         if (!"ATENDENTE".equals(cargo) && !"GERENTE".equals(cargo)) {
             throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem cancelar pedidos.");
+        }
+
+        if (StatusPedido.ENTREGUE.equals(pedido.getStatus()) || StatusPedido.CANCELADO.equals(pedido.getStatus())) {
+            throw new BadRequestException("Pedido não pode ser cancelado. Status atual: " + pedido.getStatus());
         }
 
         List<ItemPedido> itens = itemPedidoRepository.listarPorPedido(id);
@@ -139,7 +139,6 @@ public class PedidoService {
         boolean isCozinhaOuGerente = "COZINHA".equals(cargo) || "GERENTE".equals(cargo);
         boolean isAtendenteOuGerente = "ATENDENTE".equals(cargo) || "GERENTE".equals(cargo);
 
-        // Permissão verificada antes da transição
         if (StatusPedido.EM_PREPARACAO.equals(atual) && !isCozinhaOuGerente) {
             throw new ForbiddenException("Apenas COZINHA ou GERENTE podem avançar para EM_ENTREGA.");
         }
