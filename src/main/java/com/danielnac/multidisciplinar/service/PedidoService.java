@@ -129,13 +129,6 @@ public class PedidoService {
     }
 
     private void validarTransicaoStatus(StatusPedido atual, StatusPedido novo, String cargo) {
-        if (StatusPedido.CANCELADO.equals(atual) || StatusPedido.ENTREGUE.equals(atual)) {
-            throw new BadRequestException("Não é possível alterar o status de um pedido " + atual + ".");
-        }
-        if (StatusPedido.CANCELADO.equals(novo)) {
-            throw new BadRequestException("Use o endpoint de cancelamento para cancelar um pedido.");
-        }
-
         boolean isCozinhaOuGerente = "COZINHA".equals(cargo) || "GERENTE".equals(cargo);
         boolean isAtendenteOuGerente = "ATENDENTE".equals(cargo) || "GERENTE".equals(cargo);
 
@@ -144,6 +137,13 @@ public class PedidoService {
         }
         if (StatusPedido.EM_ENTREGA.equals(atual) && !isAtendenteOuGerente) {
             throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem marcar como ENTREGUE.");
+        }
+
+        if (StatusPedido.CANCELADO.equals(atual) || StatusPedido.ENTREGUE.equals(atual)) {
+            throw new BadRequestException("Não é possível alterar o status de um pedido " + atual + ".");
+        }
+        if (StatusPedido.CANCELADO.equals(novo)) {
+            throw new BadRequestException("Use o endpoint de cancelamento para cancelar um pedido.");
         }
 
         if (StatusPedido.EM_PREPARACAO.equals(atual) && StatusPedido.EM_ENTREGA.equals(novo)) return;
