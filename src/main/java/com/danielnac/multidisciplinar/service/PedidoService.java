@@ -13,6 +13,7 @@ import com.danielnac.multidisciplinar.model.Estoque;
 import com.danielnac.multidisciplinar.model.ItemPedido;
 import com.danielnac.multidisciplinar.model.Pedido;
 import com.danielnac.multidisciplinar.model.Produto;
+import com.danielnac.multidisciplinar.repository.ClienteRepository;
 import com.danielnac.multidisciplinar.repository.EstoqueRepository;
 import com.danielnac.multidisciplinar.repository.ItemPedidoRepository;
 import com.danielnac.multidisciplinar.repository.PedidoRepository;
@@ -41,6 +42,9 @@ public class PedidoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private EstoqueRepository estoqueRepository;
@@ -154,6 +158,10 @@ public class PedidoService {
     }
 
     private void validarRequest(PedidoRequest request) {
+        if (request.clienteId() != null && clienteRepository.obterPorId(request.clienteId()) == null) {
+            throw new NotFoundException("Cliente " + request.clienteId() + " não encontrado.");
+        }
+
         if (request.unidadeId() == null) {
             throw new BadRequestException("O campo 'unidadeId' é obrigatório.");
         }
