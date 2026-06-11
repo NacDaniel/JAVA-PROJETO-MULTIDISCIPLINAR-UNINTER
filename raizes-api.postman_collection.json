@@ -151,7 +151,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 },\n    { \"produtoId\": 7, \"quantidade\": 1 }\n  ]\n}"
+              "raw": "{\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 },\n    { \"produtoId\": 2, \"quantidade\": 1 }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/pedidos",
@@ -166,7 +166,7 @@
               "status": "Created",
               "code": 201,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 112.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 2, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
             }
           ]
         },
@@ -177,7 +177,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 }\n  ]\n}"
+              "raw": "{\n  \"unidadeId\": 1,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/pedidos",
@@ -203,7 +203,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"APP\",\n  \"itens\": [\n    { \"produtoId\": 9999, \"quantidade\": 1 }\n  ]\n}"
+              "raw": "{\n  \"unidadeId\": 1,\n  \"canalPedido\": \"APP\",\n  \"itens\": [\n    { \"produtoId\": 9999, \"quantidade\": 1 }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/pedidos",
@@ -229,7 +229,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 10,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"TOTEM\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 9999 }\n  ]\n}"
+              "raw": "{\n  \"unidadeId\": 1,\n  \"canalPedido\": \"TOTEM\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 9999 }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/pedidos",
@@ -319,7 +319,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 89.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 7, \"quantidade\": 1, \"precoUnitario\": 23.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
+              "body": "{\n  \"pedidoId\": 42,\n  \"status\": \"AGUARDANDO_PAGAMENTO\",\n  \"total\": 112.70,\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2, \"precoUnitario\": 32.90 },\n    { \"produtoId\": 2, \"quantidade\": 1, \"precoUnitario\": 45.90 }\n  ],\n  \"createdAt\": \"2026-05-19T15:33:08Z\"\n}"
             }
           ]
         },
