@@ -71,7 +71,8 @@ public class EstoqueRepository extends BaseRepository {
         e.setProdutoId(rs.getInt("produto_id"));
         e.setUnidadeId(rs.getInt("unidade_id"));
         e.setQuantidade(rs.getInt("quantidade"));
-        e.setDataAtualizacao(rs.getTimestamp("data_atualizacao").toLocalDateTime());
+        java.sql.Timestamp ts = rs.getTimestamp("data_atualizacao");
+        e.setDataAtualizacao(ts != null ? ts.toLocalDateTime() : null);
         return e;
     }
 }

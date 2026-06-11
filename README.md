@@ -91,6 +91,7 @@ CREATE TABLE estoque (
     unidade_id INT NOT NULL,
     produto_id INT NOT NULL,
     quantidade INT NOT NULL DEFAULT 0,
+    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (unidade_id) REFERENCES unidades(id),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
