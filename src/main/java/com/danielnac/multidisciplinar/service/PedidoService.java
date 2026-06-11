@@ -95,9 +95,8 @@ public class PedidoService {
     }
 
     public void atualizarStatus(Integer id, StatusPedido novoStatus) {
-        Pedido pedido = obterPorId(id);
-
         String cargo = SessionUtil.getCargo();
+        Pedido pedido = obterPorId(id);
         validarTransicaoStatus(pedido.getStatus(), novoStatus, cargo);
 
         pedidoRepository.atualizarStatus(id, novoStatus);
@@ -107,12 +106,12 @@ public class PedidoService {
     }
 
     public void cancelar(Integer id) {
-        Pedido pedido = obterPorId(id);
-
         String cargo = SessionUtil.getCargo();
         if (!"ATENDENTE".equals(cargo) && !"GERENTE".equals(cargo)) {
             throw new ForbiddenException("Apenas ATENDENTE ou GERENTE podem cancelar pedidos.");
         }
+
+        Pedido pedido = obterPorId(id);
 
         if (StatusPedido.ENTREGUE.equals(pedido.getStatus()) || StatusPedido.CANCELADO.equals(pedido.getStatus())) {
             throw new BadRequestException("Pedido não pode ser cancelado. Status atual: " + pedido.getStatus());
