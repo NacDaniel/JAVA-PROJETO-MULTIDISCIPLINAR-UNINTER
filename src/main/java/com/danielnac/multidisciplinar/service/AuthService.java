@@ -84,7 +84,7 @@ public class AuthService {
             throw new BadRequestException("O campo de 'senha' é obrigatório.");
         }
         if (!senhaNova.equals(senhaNovaValidate)) {
-            throw new BadRequestException("A confirmação da senha não é igual à senha nova.");
+            throw new BadRequestException("A senha nova e a confirmação não coincidem.");
         }
         validarSenhaForte(senhaNova);
     }
