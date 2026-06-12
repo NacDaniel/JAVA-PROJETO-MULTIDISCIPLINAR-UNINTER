@@ -64,7 +64,7 @@ public class AuthService {
         validarNovaSenha(senhaAtual, senhaNova, senhaNovaValidate);
 
         if (!PasswordHelper.validate(senhaAtual, usuario.getSenha())) {
-            throw new BadRequestException("Senha atual inválida.");
+            throw new UnauthorizedException("Senha atual inválida.");
         }
 
         usuarioRepository.atualizarSenha(usuarioId, PasswordHelper.encrypt(senhaNova));
