@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/estoques")
-public class estoqueController {
-    // TODO entrada/saída, consulta por unidade
+@RequestMapping("/api/estoque")
+public class EstoqueController {
 }

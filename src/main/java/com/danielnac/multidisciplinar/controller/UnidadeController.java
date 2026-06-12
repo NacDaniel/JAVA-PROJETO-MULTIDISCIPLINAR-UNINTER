@@ -5,6 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/unidades")
-public class unidadeController {
-    // TODO listar unidades
+public class UnidadeController {
 }

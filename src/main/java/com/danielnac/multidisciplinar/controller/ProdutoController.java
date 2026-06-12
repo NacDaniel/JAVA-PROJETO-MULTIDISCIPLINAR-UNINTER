@@ -5,6 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/produtos")
-public class produtoController {
-    // TODO CRUD, consulta
+public class ProdutoController {
 }

@@ -18,7 +18,7 @@ import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/auth")
-public class authController {
+public class AuthController {
 
     @Value("${cookie.secure:false}")
     private boolean cookieSecure;

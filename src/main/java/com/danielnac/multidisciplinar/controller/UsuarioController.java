@@ -5,6 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/usuarios")
-public class usuarioController {
-    // TODO cadastro, perfil
+public class UsuarioController {
 }
