@@ -183,6 +183,10 @@ INSERT INTO produtos (nome, descricao, preco, categoria) VALUES
 ('Carne de Sol', 'Carne de sol com macaxeira frita', 45.90, 'Prato Principal'),
 ('Tapioca Recheada', 'Tapioca com queijo coalho e carne', 23.90, 'Lanche');
 
+-- Cliente (para testes com clienteId)
+INSERT INTO clientes (nome, email, telefone, cpf, aceite_lgpd, data_consentimento_lgpd) VALUES
+('João Silva', 'joao@email.com', '81999990001', '000.000.000-01', TRUE, NOW());
+
 -- Estoque (produto_id 1, 2, 3 na unidade 1)
 INSERT INTO estoque (unidade_id, produto_id, quantidade) VALUES
 (1, 1, 50),

@@ -170,7 +170,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 },\n    { \"produtoId\": 2, \"quantidade\": 1 }\n  ]\n}"
+              "raw": "{\n  \"clienteId\": 1,\n  \"unidadeId\": 1,\n  \"canalPedido\": \"BALCAO\",\n  \"itens\": [\n    { \"produtoId\": 3, \"quantidade\": 2 },\n    { \"produtoId\": 2, \"quantidade\": 1 }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/pedidos",
